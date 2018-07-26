@@ -7,7 +7,9 @@
       <el-main>
           <div class="annotation-wrap">
               <div id="an_container">
-                <div id="an_map"></div>
+                <div id="an_map">
+                   <img :src="bgimg" alt="img" id="hideimg">
+                </div>
               </div>
           </div>
       </el-main>
@@ -24,9 +26,44 @@ export default {
     return{
       anArr:[],
       mark:{},
+      bgimg:'http://pa7krp3eu.bkt.clouddn.com/u2159.png',
     }
   },
   methods: {
+    drawImg(){
+      let that = this;
+      let container = this.getid('an_container');
+      let map = document.getElementById("an_map");
+      let newCanvas = document.createElement('canvas');
+      let context = newCanvas.getContext('2d');
+
+      let newImage = new Image();
+      newImage.src = this.bgimg;
+
+      let imgOjb = this.getid("hideimg");
+
+      let imgWidth = imgOjb.getBoundingClientRect().width
+      let imgHeight = imgOjb.getBoundingClientRect().height
+      
+
+      newCanvas.width = imgWidth;
+      newCanvas.height = imgHeight;
+
+      context.drawImage(newImage,0,0,imgWidth,imgHeight)
+      // 移除原始图片
+      map.removeChild(imgOjb);
+      // 把canvas插入页面
+      map.appendChild(newCanvas);
+      newCanvas.addEventListener('click', function(e){  
+          //canvas内部绑定点击事件
+          that.bindEvent();
+       
+      }, false);
+
+      // let imgData   = localStorage.getItem('pdfsaveimg');
+      // let canvasWidth  = localStorage.getItem('imgWidth');
+      // let canvasHeight = localStorage.getItem('imgHeight');
+    },
     getid(id){
         //获取dom对象
         return document.getElementById(id);
@@ -123,7 +160,10 @@ export default {
           this.saveMark();
       }
     }
-  }
+  },
+  mounted() {
+    this.drawImg();
+  },
 }
 </script>
 
